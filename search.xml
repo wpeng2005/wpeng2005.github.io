@@ -7,6 +7,374 @@
 ]]></content>
   </entry>
   <entry>
+    <title>Mysql</title>
+    <url>/2024/06/30/MysqlBase/</url>
+    <content><![CDATA[<p>1.DDL</p>
+<p>DDL-数据库操作</p>
+<pre><code>        显示所有的数据库 show databases
+        创建数据库 create database 数据库名
+        使用数据库 use 数据库名
+        查询当前处于哪个数据库 select   database()
+        删除数据库 drop database 数据库名	
+</code></pre>
+<p>DDL-表操作-查询</p>
+<pre><code>        查询当前数据库所有表	show tables
+        查询表结构	desc 表名
+        查询指定表的建表语句	show create table 表名
+</code></pre>
+<p>DDL-表操作-创建</p>
+<pre><code>        create table 表名(
+                    字段1 字段1类型[comment 字段1注释],
+                    字段2 字段2类型[comment 字段2注释],
+                    .......
+                    字段N 字段N类型[comment 字段N注释]        该字段后面没有逗号
+                      )[comment 表注释];
+</code></pre>
+<p>DDL-表操作-修改</p>
+<pre><code>        添加字段	 alter  table 表名 add  字段名 类型(长度)
+        修改数据类型 alter table 表名 modify 字段名 新数据类型()
+        修改字段名和字段类型 alter table 表名 change 旧字段名 新字段名 类型(长度)
+        删除字段 alter table 表名 drop 字段名
+        修改表名 alter table 表名 rename to 新表名
+</code></pre>
+<p>DDL-表操作-删除</p>
+<pre><code>        删除表 drop table[if exists] 表名
+        删除指定表，并重新创建该表 truncate table 表名
+</code></pre>
+<p>2.DML</p>
+<p>DML-添加数据 </p>
+<pre><code>        1.给指定数段添加数据 insert   into 表名(字段名1,字段名2,...)values(值1，值2,...)
+        2.给全部字段插入数据  insert into 表名  values (值1，值2，...)
+        3.批量添加数据  	insert into 表名(字段1,字段2，...) values(值1,值2，...)
+                        insert into 表名  values (值1，值2，...)
+        //注意字符串和日期型数据应该包含在引号中
+</code></pre>
+<p>DML-修改数据</p>
+<pre><code>        update 表名  set 字段名1=值1，字段名2=值2... where 条件   条件可以有也可以没有，如果没有则会修改整张表的数据
+</code></pre>
+<p>DML-删除数据</p>
+<pre><code>        delete from 表名 where 条件  
+        //delete语句不能删除某一个字段，可以用update，是字段的值=null
+</code></pre>
+<p>3.DQL</p>
+<p>DQL-基本查询</p>
+<pre><code>        1.查询多个字段  select 字段1，字段2，...from 表名、
+                       select * from 表名
+        2.设置别名 select 字段1[as 别名],字段2[as 别名]...from 表名
+        3.去除重复记录 select  distinct 字段列表 from 表名
+</code></pre>
+<p>DQL-条件查询</p>
+<pre><code>        1.语法  select 字段列表 from 表名  where 条件列表
+        2.条件 比较运算符  大于小于等    like占位符(模糊匹配 _匹配单个字符,%匹配多个字符0) isNULL是NULl  between and 在某个范围之间 
+               逻辑运算符  and或者&amp;&amp; or或者||  not或者！ 
+</code></pre>
+<p>DQL-聚合函数</p>
+<pre><code>        1.常见聚合函数
+        count 统计数量
+        max 最大值
+        min 最小值
+        avg 平均值
+        sum 求和
+        2.语法 select 聚合函数(字段列表) from 表名   where 条件
+        注意 null值不参与所有聚合函数运算   字段列表就是表名.字段名或者字段名
+</code></pre>
+<p>DQL-分组查询</p>
+<pre><code>        select字段列表 FROM 表名 [WHERE 分组前条件限定] GROUP BY 分组字段名 [HAVING 分组后条件过滤];
+        
+        注意:分组之后，查询的字段为聚合函数和分组字段,查询其他字段无任何意义 
+        -- where和having区别:
+        
+        执行时机不一样: where 是分组之前进行限定，不满足where条件,则不参与分组，而having是分组之后对结果进行过滤。
+        可判断的条件不一 样: where 不能对聚合函数进行判断，having 可以。
+        -- 执行顺序: where &gt;聚合函数&gt; having
+        
+        -- 1.查询男同学和女同学各自的数学平均分
+        select avg(math) from stu group by sex ;
+         
+        -- 注意:分组之后，查询的字段为聚合函数和分组字段,查询其他字段无任何意义 
+        select sex,avg(math) from stu group by sex ;
+         
+        -- 2.查询男同学和女同学各自的数学平均分，以及各自人数
+        select sex,avg(math),count(*) from stu group by sex ;
+         
+        -- 3.查询男同学和女同学各自的数学平均分，以及各自人数，要求:分数低于70分的不参与分组
+        select sex,avg(math),count(*) from stu where math &gt;70 group by sex ;
+         
+        -- 4.查询男同学和女同学各自的数学平均分，以及各自人数，要求:分数低于70分的不参与分组，分组之后人数大于2
+        select sex,avg(math),count(*) from stu where math &gt;70 group by sex having count(*) &gt; 2 ;
+</code></pre>
+<p>DQL—排序查询</p>
+<pre><code>        SELECT 字段列表 FROM 表名 ORDER BY 排序字段名1 [排序方式1],排序字段名2 [排序方式2] ..
+    
+            排序方式:
+            
+            ASC:升序排列(默认值)
+            DESC: 降序排列
+            注意:如果有多个排序条件，当前边的条件值一-样时, 才会根据第二条件进行排序。
+</code></pre>
+<p>​				<br>​				原本的数据（是按照id升序排列的）<br>​				<br>​				1.查询学生信息，按照年龄升序排列<br>​				<br>                select * from stu order by age asc ;&#x2F;&#x2F;asc可以不写，默认是升序排序</p>
+<pre><code>            2.查询学生信息，按照数学成绩降序排列 
+            
+            select * from stu order by math desc ;
+            
+             3.查询学生信息，按照数学成绩降序排列，如果数学成绩一样，再按照英语成绩升序排列
+            
+            select * from stu order by math desc, english asc ;
+</code></pre>
+<p>DQl-分页查询</p>
+<pre><code>            分页查询
+            
+            应用场景：当页面上的数据，一页显示不全，则需要分页显示
+            
+            分页查询的sql命令请求数据库服务器 —&gt; 服务器响应查询到的多条数据 —&gt; 前台页面
+            
+            语法：
+            select 字段列表 from 表名 limit 起始索引，查询记录数
+            起始索引从0开始 起始索引=(查询页码-1)*每页显示记录数
+            select 查询列表
+            from 表1 别名
+            join 表2 别名
+            on 连接条件
+            where 筛选条件
+            group by 分组
+            having 分组后筛选
+            order by 排序列表
+            limit 起始条目索引，显示的条目数
+</code></pre>
+<p>​				<br>​				执行顺序：<br>​				<br>​				1&gt; from 子句<br>​				2&gt; join 子句<br>​				3&gt; on 子句<br>​				4&gt; where 子句<br>​				5&gt; group by 子句<br>​				6&gt; having 子句<br>​				7&gt; select 子句<br>​				8&gt; order by 子句<br>​				9&gt; limit 子句<br>​				<br>                特点：</p>
+<pre><code>            起始条目索引如果不写，默认为0
+            #案例1：查询员工信息表的前5条
+            SELECT * FROM employees LIMIT 0,5;
+            #完全等价于
+            SELECT * FROM employees LIMIT 5;
+            
+            limit后面支持两个参数
+            参数一：显示的起始条目索引
+            参数二：条目数
+            #案例2：查询有奖金的，且工资较高的第11名到第20名
+            SELECT *
+            FROM employees
+            WHERE commission_pct IS NOT NULL
+            ORDER BY salary DESC
+            LIMIT 10,10;
+            注意：分页查询中的索引用0开始
+            
+            公式：
+            要显示的页数是page，每页显示的条目数为size
+            select *
+            from employees
+            limit (page-1)*size,size;
+</code></pre>
+<p>DQL-综合练习	</p>
+<pre><code>            假如有一个person表，属性有age，gender，name，id，address等
+            1.查询年龄为20，21，22，23岁的女性员工信息
+                select * from person  where gender=&#39;女&#39; and age in(20,21,22,23)
+            2.查询性别为男，并且年龄在20-40岁(含)以内的姓名为三个字的员工
+                select * from person where sex=男 and(age between 20 and 40)and name like &#39;___&#39;
+            3.统计员工表中，年龄小于60，男性员工和女性员工的人数
+                select  gender,count(*) from person where age&lt;60 group by gender
+            4.查询所有年龄小于等于35岁员工的姓名和年龄，并对查询结构按年龄进行升序排序，如果年龄相同则按照入职时间降序排序
+                select name,age from person  where age&lt;=35 order by age asc,entrytime desc
+            5.查询性别为男，且年龄在20-40（含)以内的前五个员工信息，对查询结果按年龄升序排序，年龄相同按照入职时间降序排序
+                select * where age=&#39;男&#39;and age between 20 and 40 order by age asc,entrytime desc limit 5
+</code></pre>
+<p>DQL-执行顺序</p>
+<pre><code>            一个完整的DQL语句的语法格式：
+    
+                select ... from ... where ... group by ... having ... order by ..		
+                执行顺序：
+                select ...  		5	
+                from ...   			1
+                where ... 			2
+                group by ... 		3
+                having ... 			4
+                order by ..			6
+            
+                1从哪张表中查，from
+                2筛选出要求的信息 where
+                3再进行分组 group by
+                4分组后再筛选出有符合要求的信息 having
+                5然后根据字段查出来 select
+                6最后排序输出
+</code></pre>
+<p>4.DCl</p>
+<p>DCL-用户管理</p>
+<pre><code>        DCL:管理用户，授权
+        1.管理用户
+        ①添加用户
+            语法：CREATE USER &#39;用户名&#39;@&#39;主机名&#39; IDENTIFIED BY &#39;密码&#39;;
+            例子：CREATE USER &#39;xiaozhi&#39;@&#39;%&#39; IDENTIFIED BY &#39;123&#39;;
+                
+        ②删除用户
+            语法：drop user &#39;用户名&#39;@&#39;主机名&#39;;
+            例子：DROP USER &#39;xiaozhi&#39;@&#39;%&#39;;
+        
+        ③修改用户密码
+            第一种方式：
+                语法：UPDATE USER SET PASSWORD = PASSWORD(&#39;新密码&#39;) WHERE USER = &#39;用户名&#39;;
+                例子：UPDATE USER SET PASSWORD = PASSWORD(&#39;123456&#39;) WHERE USER = &#39;xiaozhi&#39;;
+            第二种方式：
+                语法：SET PASSWORD FOR &#39;用户名&#39;@&#39;主机名&#39; = PASSWORD(&#39;新密码&#39;);
+                例子：SET PASSWORD FOR &#39;xiaozhi&#39;@&#39;%&#39; = PASSWORD(&#39;abc&#39;);
+    
+             mysql数据库中忘记了root用户的密码？
+                    1. cmd -- &gt; net stop mysql 停止mysql服务
+                            需要管理员运行该cmd
+                    2. 使用无验证方式启动mysql服务： mysqld --skip-grant-tables
+                    3. 打开新的cmd窗口,直接输入mysql命令，敲回车。就可以登录成功
+                    4. use mysql;
+                    5.flush privilleges;
+                        说明：如果没有进行这个步骤进行下一步就会报错。
+                    6. update user set password = password(&#39;你的新密码&#39;) where user = &#39;root&#39;;
+                    7. 关闭两个窗口
+                    8. 打开任务管理器，手动结束mysqld.exe 的进程
+                    9. 启动mysql服务
+                    10. 使用新密码登录。
+    
+            ④查询用户
+            ①使用user数据库中
+            ②查询
+            语法：select * from user;
+    
+        2.授权
+        ①查询权限：
+                SHOW GRANTS FOR &#39;用户名&#39;@&#39;主机名&#39;;
+                
+        ②授予权限：
+                语法：grant 权限列表 on 数据库名.表名 to &#39;用户名&#39;@&#39;主机名&#39;;
+                例子：给xiaozhi用户授予所有权限，在任意数据库任意表上
+                        GRANT ALL ON *.* TO &#39;xiaozhi&#39;@&#39;%&#39;;
+                通配符ALL和*：ALL表示全部权限
+                                *表示全部
+    
+        ③撤销权限：
+                语法：revoke 权限列表 on 数据库名.表名 from &#39;用户名&#39;@&#39;主机名&#39;;
+                例子：REVOKE ALL ON *.* FROM &#39;xiaozhi&#39;@&#39;%&#39;;
+    
+            列子
+                1.创建用户itcast，只能够在当前主机localhost访问，密码123456
+                    create user &#39;itcast&#39;@&#39;localhost&#39;  identified by &#39;123456&#39;
+                2.创建heima，可以在任意主机访问该数据库，密码123456
+                    create &#39;heima&#39;@* identified by &#39;123456&#39;
+                3.修改用户heima的访问密码为1234
+                    update user set password=password(&#39;1234&#39;) where user=&#39;heima&#39;
+                4.删除itcast@localhost用户
+                    drop uesr &#39;itcast&#39;@&#39;localhost&#39;
+</code></pre>
+<p>DCL-控制权限</p>
+<pre><code>        查询权限
+            SHOW GREANTS FOR ‘用户名’@‘主机名’;
+    
+        授予权限
+            GRANT 权限列表 ON 数据库名.表名 TO ‘用户名’@‘主机名’;
+    
+        撤销权限
+            REVOKE 权限列表 ON 数据库名.表名 FROM ‘用户名’@‘主机名’;
+</code></pre>
+<p>函数</p>
+<p>1.字符串函数</p>
+<pre><code>常用字符串函数 
+    1.字符串拼接 
+        concat(s1,s2,s3,...)
+    2.去除字符串头部和尾部的空格
+        trim(str)
+    3.返回从字符串str从start位置起的len个长度的字符串
+        substring(str,start,len)
+    4.左右填充  用字符串pad对字符串str的左右进行填充，达到n个字符串长度
+        lpad(str,n,pad)
+        rpad(str,n,pad)
+
+由于业务需求变更，企业员工编号统一为五位数，目前不足五位数的向左补0，如1号员工的编号为00001
+    update person set worknumber=lpad(worknumber,5,&#39;0&#39;)
+        //person是表名，worknumber是字段名，l是left
+</code></pre>
+<p>2.数值函数</p>
+<pre><code>常用数值函数
+    1.cell(x) 向上取整
+    2.floor(x) 向下取整
+    3.mod(x 返回x/y的模
+</code></pre>
+<p>3.流程函数</p>
+<pre><code>统计学院的成绩，展示规则如下
+学员的属性有name id math chinese english  表的名字 是score
+    &gt;=85优秀  &gt;=60及格  &lt;60 不及格
+    select 
+        id,
+        name,
+        (case when math &gt;85 then &#39;优秀&#39; when math &gt;60 then &#39;及格&#39; when math  &lt;60 then &#39;不及格&#39; )math,
+        (case when english &gt;85 then &#39;优秀&#39; when english&gt;60 then &#39;及格&#39; when english &lt;60 then &#39;不及格&#39; )english,
+        (case when chinese &gt;85 then &#39;优秀&#39; when chinese &gt;60 then &#39;及格&#39; when chinese &lt;60 then &#39;不及格&#39; )chinese
+    from score;
+</code></pre>
+<p>约束</p>
+<pre><code>1.约束的分类
+    主键约束(primary key) PK
+    自增长约束(auto_increment)
+    非空约束(not null)
+    唯一性约束(unique)
+    默认约束(default)
+    零填充约束(zerofill)
+    外键约束(foreign key) FK
+    检查约束(check(条件)) 
+        实例
+            create  table  user(
+                    id int primary key auto_increment comment &#39;主键约束&#39;,
+                    name varchar(10) not null  unique  comment &#39;非空约束和唯一性约束&#39;,
+                    age int check ( age&gt;0&amp;&amp;age&lt;120 ) comment &#39;检查约束&#39;,
+                    status varchar(1) default &#39;1&#39; comment&#39;默认约束&#39;,
+                    gender char(1)
+             )comment &#39;用户表&#39;;
+
+
+2.外键约束
+    作用:外键可以让两张表的数据之间建立连接，从而保证数据的一致性和完整性
+    添加外键
+        1.创建表的同时添加外键
+                create table score(
+                score int(3),
+                st_id int(16),
+                cs_id int(16),
+                primary key(st_id,cs_id),
+                FOREIGN KEY (st_id) REFERENCES student(id),
+                FOREIGN KEY (cs_id) REFERENCES classes(id)
+                );
+                            
+        2. 已经创建表了怎么办：在表的定义外进行添加
+                alter table 表名 add constraint FK_ID foreign key(你的外键字段名) REFERENCES 外表表名(对应的表的主键字段名);
+        3.删除外键
+            alter table 表名 drop foreign key 外键名称
+
+        4.外键删除和更新行为				
+        NO ACTION	在父表中删除/更新记录时，首先检查记录中是否有外键，有则不允许删除/更新
+        RESTRICT	当在父表中删除/更新记录时，首先检查记录中是否有外键,有则不允许删除/更新
+        CASCADE	当在父表中删除/更新记录时，首先检查该记录是否有对应的外键，如果有，则也删除/更新外键在子表中的记录
+        set NULL	当在父表中删除对应记录时，首先检查该记录是否有对应外键，如果有则设置子表中外键值为null
+        set default	父表变更时，子表将外键列设置成一个默认的值(Innodb不支持)
+</code></pre>
+<p>多表查询</p>
+<pre><code>    连接查询
+        1.内连接  inner join：只返回两个表中连接字段相等的行。
+            演示:查询每一个员工的姓名以及相关部门的名称 表结构 emp,dept 连接条件 empt.dept_id=dept.id
+                select emp.name dept.name from emp,dept where  empt.dept_id=dept.id 这是隐式内连接
+                select e.name d.name from emp e,dept d where  e.dept_id=dept.id  给emp和dept起了别名e和p
+                select e.name d.name from emp e ineer join on e.dept_id=dept.id  给emp和dept起了别名e和p，但是这是显式内连接，且inner关键字可以删除
+
+
+        2.外连接
+                left join（左连接）：返回包括左表中的所有记录和右表中连接字段相等的记录。
+                right join（右连接）：返回包括右表中的所有记录和左表中连接字段相等的记录。
+                full join （全外连接）：返回左右表中所有的记录和左右表中连接字段相等的记录。
+</code></pre>
+]]></content>
+      <categories>
+        <category>RelationalDatabases</category>
+      </categories>
+      <tags>
+        <tag>DataBase</tag>
+        <tag>Mysql</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Linux</title>
     <url>/2024/06/30/Linux/</url>
     <content><![CDATA[<h1 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h1><p><strong>Linux一切皆文件：文件就读,写  （权限）</strong></p>
@@ -1110,373 +1478,6 @@
       </categories>
       <tags>
         <tag>-Linux -OperationSystem</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Mysql</title>
-    <url>/2024/06/30/MysqlBase/</url>
-    <content><![CDATA[<p>1.DDL</p>
-<p>DDL-数据库操作</p>
-<pre><code>        显示所有的数据库 show databases
-        创建数据库 create database 数据库名
-        使用数据库 use 数据库名
-        查询当前处于哪个数据库 select   database()
-        删除数据库 drop database 数据库名	
-</code></pre>
-<p>DDL-表操作-查询</p>
-<pre><code>        查询当前数据库所有表	show tables
-        查询表结构	desc 表名
-        查询指定表的建表语句	show create table 表名
-</code></pre>
-<p>DDL-表操作-创建</p>
-<pre><code>        create table 表名(
-                    字段1 字段1类型[comment 字段1注释],
-                    字段2 字段2类型[comment 字段2注释],
-                    .......
-                    字段N 字段N类型[comment 字段N注释]        该字段后面没有逗号
-                      )[comment 表注释];
-</code></pre>
-<p>DDL-表操作-修改</p>
-<pre><code>        添加字段	 alter  table 表名 add  字段名 类型(长度)
-        修改数据类型 alter table 表名 modify 字段名 新数据类型()
-        修改字段名和字段类型 alter table 表名 change 旧字段名 新字段名 类型(长度)
-        删除字段 alter table 表名 drop 字段名
-        修改表名 alter table 表名 rename to 新表名
-</code></pre>
-<p>DDL-表操作-删除</p>
-<pre><code>        删除表 drop table[if exists] 表名
-        删除指定表，并重新创建该表 truncate table 表名
-</code></pre>
-<p>2.DML</p>
-<p>DML-添加数据 </p>
-<pre><code>        1.给指定数段添加数据 insert   into 表名(字段名1,字段名2,...)values(值1，值2,...)
-        2.给全部字段插入数据  insert into 表名  values (值1，值2，...)
-        3.批量添加数据  	insert into 表名(字段1,字段2，...) values(值1,值2，...)
-                        insert into 表名  values (值1，值2，...)
-        //注意字符串和日期型数据应该包含在引号中
-</code></pre>
-<p>DML-修改数据</p>
-<pre><code>        update 表名  set 字段名1=值1，字段名2=值2... where 条件   条件可以有也可以没有，如果没有则会修改整张表的数据
-</code></pre>
-<p>DML-删除数据</p>
-<pre><code>        delete from 表名 where 条件  
-        //delete语句不能删除某一个字段，可以用update，是字段的值=null
-</code></pre>
-<p>3.DQL</p>
-<p>DQL-基本查询</p>
-<pre><code>        1.查询多个字段  select 字段1，字段2，...from 表名、
-                       select * from 表名
-        2.设置别名 select 字段1[as 别名],字段2[as 别名]...from 表名
-        3.去除重复记录 select  distinct 字段列表 from 表名
-</code></pre>
-<p>DQL-条件查询</p>
-<pre><code>        1.语法  select 字段列表 from 表名  where 条件列表
-        2.条件 比较运算符  大于小于等    like占位符(模糊匹配 _匹配单个字符,%匹配多个字符0) isNULL是NULl  between and 在某个范围之间 
-               逻辑运算符  and或者&amp;&amp; or或者||  not或者！ 
-</code></pre>
-<p>DQL-聚合函数</p>
-<pre><code>        1.常见聚合函数
-        count 统计数量
-        max 最大值
-        min 最小值
-        avg 平均值
-        sum 求和
-        2.语法 select 聚合函数(字段列表) from 表名   where 条件
-        注意 null值不参与所有聚合函数运算   字段列表就是表名.字段名或者字段名
-</code></pre>
-<p>DQL-分组查询</p>
-<pre><code>        select字段列表 FROM 表名 [WHERE 分组前条件限定] GROUP BY 分组字段名 [HAVING 分组后条件过滤];
-        
-        注意:分组之后，查询的字段为聚合函数和分组字段,查询其他字段无任何意义 
-        -- where和having区别:
-        
-        执行时机不一样: where 是分组之前进行限定，不满足where条件,则不参与分组，而having是分组之后对结果进行过滤。
-        可判断的条件不一 样: where 不能对聚合函数进行判断，having 可以。
-        -- 执行顺序: where &gt;聚合函数&gt; having
-        
-        -- 1.查询男同学和女同学各自的数学平均分
-        select avg(math) from stu group by sex ;
-         
-        -- 注意:分组之后，查询的字段为聚合函数和分组字段,查询其他字段无任何意义 
-        select sex,avg(math) from stu group by sex ;
-         
-        -- 2.查询男同学和女同学各自的数学平均分，以及各自人数
-        select sex,avg(math),count(*) from stu group by sex ;
-         
-        -- 3.查询男同学和女同学各自的数学平均分，以及各自人数，要求:分数低于70分的不参与分组
-        select sex,avg(math),count(*) from stu where math &gt;70 group by sex ;
-         
-        -- 4.查询男同学和女同学各自的数学平均分，以及各自人数，要求:分数低于70分的不参与分组，分组之后人数大于2
-        select sex,avg(math),count(*) from stu where math &gt;70 group by sex having count(*) &gt; 2 ;
-</code></pre>
-<p>DQL—排序查询</p>
-<pre><code>        SELECT 字段列表 FROM 表名 ORDER BY 排序字段名1 [排序方式1],排序字段名2 [排序方式2] ..
-    
-            排序方式:
-            
-            ASC:升序排列(默认值)
-            DESC: 降序排列
-            注意:如果有多个排序条件，当前边的条件值一-样时, 才会根据第二条件进行排序。
-</code></pre>
-<p>​				<br>​				原本的数据（是按照id升序排列的）<br>​				<br>​				1.查询学生信息，按照年龄升序排列<br>​				<br>                select * from stu order by age asc ;&#x2F;&#x2F;asc可以不写，默认是升序排序</p>
-<pre><code>            2.查询学生信息，按照数学成绩降序排列 
-            
-            select * from stu order by math desc ;
-            
-             3.查询学生信息，按照数学成绩降序排列，如果数学成绩一样，再按照英语成绩升序排列
-            
-            select * from stu order by math desc, english asc ;
-</code></pre>
-<p>DQl-分页查询</p>
-<pre><code>            分页查询
-            
-            应用场景：当页面上的数据，一页显示不全，则需要分页显示
-            
-            分页查询的sql命令请求数据库服务器 —&gt; 服务器响应查询到的多条数据 —&gt; 前台页面
-            
-            语法：
-            select 字段列表 from 表名 limit 起始索引，查询记录数
-            起始索引从0开始 起始索引=(查询页码-1)*每页显示记录数
-            select 查询列表
-            from 表1 别名
-            join 表2 别名
-            on 连接条件
-            where 筛选条件
-            group by 分组
-            having 分组后筛选
-            order by 排序列表
-            limit 起始条目索引，显示的条目数
-</code></pre>
-<p>​				<br>​				执行顺序：<br>​				<br>​				1&gt; from 子句<br>​				2&gt; join 子句<br>​				3&gt; on 子句<br>​				4&gt; where 子句<br>​				5&gt; group by 子句<br>​				6&gt; having 子句<br>​				7&gt; select 子句<br>​				8&gt; order by 子句<br>​				9&gt; limit 子句<br>​				<br>                特点：</p>
-<pre><code>            起始条目索引如果不写，默认为0
-            #案例1：查询员工信息表的前5条
-            SELECT * FROM employees LIMIT 0,5;
-            #完全等价于
-            SELECT * FROM employees LIMIT 5;
-            
-            limit后面支持两个参数
-            参数一：显示的起始条目索引
-            参数二：条目数
-            #案例2：查询有奖金的，且工资较高的第11名到第20名
-            SELECT *
-            FROM employees
-            WHERE commission_pct IS NOT NULL
-            ORDER BY salary DESC
-            LIMIT 10,10;
-            注意：分页查询中的索引用0开始
-            
-            公式：
-            要显示的页数是page，每页显示的条目数为size
-            select *
-            from employees
-            limit (page-1)*size,size;
-</code></pre>
-<p>DQL-综合练习	</p>
-<pre><code>            假如有一个person表，属性有age，gender，name，id，address等
-            1.查询年龄为20，21，22，23岁的女性员工信息
-                select * from person  where gender=&#39;女&#39; and age in(20,21,22,23)
-            2.查询性别为男，并且年龄在20-40岁(含)以内的姓名为三个字的员工
-                select * from person where sex=男 and(age between 20 and 40)and name like &#39;___&#39;
-            3.统计员工表中，年龄小于60，男性员工和女性员工的人数
-                select  gender,count(*) from person where age&lt;60 group by gender
-            4.查询所有年龄小于等于35岁员工的姓名和年龄，并对查询结构按年龄进行升序排序，如果年龄相同则按照入职时间降序排序
-                select name,age from person  where age&lt;=35 order by age asc,entrytime desc
-            5.查询性别为男，且年龄在20-40（含)以内的前五个员工信息，对查询结果按年龄升序排序，年龄相同按照入职时间降序排序
-                select * where age=&#39;男&#39;and age between 20 and 40 order by age asc,entrytime desc limit 5
-</code></pre>
-<p>DQL-执行顺序</p>
-<pre><code>            一个完整的DQL语句的语法格式：
-    
-                select ... from ... where ... group by ... having ... order by ..		
-                执行顺序：
-                select ...  		5	
-                from ...   			1
-                where ... 			2
-                group by ... 		3
-                having ... 			4
-                order by ..			6
-            
-                1从哪张表中查，from
-                2筛选出要求的信息 where
-                3再进行分组 group by
-                4分组后再筛选出有符合要求的信息 having
-                5然后根据字段查出来 select
-                6最后排序输出
-</code></pre>
-<p>4.DCl</p>
-<p>DCL-用户管理</p>
-<pre><code>        DCL:管理用户，授权
-        1.管理用户
-        ①添加用户
-            语法：CREATE USER &#39;用户名&#39;@&#39;主机名&#39; IDENTIFIED BY &#39;密码&#39;;
-            例子：CREATE USER &#39;xiaozhi&#39;@&#39;%&#39; IDENTIFIED BY &#39;123&#39;;
-                
-        ②删除用户
-            语法：drop user &#39;用户名&#39;@&#39;主机名&#39;;
-            例子：DROP USER &#39;xiaozhi&#39;@&#39;%&#39;;
-        
-        ③修改用户密码
-            第一种方式：
-                语法：UPDATE USER SET PASSWORD = PASSWORD(&#39;新密码&#39;) WHERE USER = &#39;用户名&#39;;
-                例子：UPDATE USER SET PASSWORD = PASSWORD(&#39;123456&#39;) WHERE USER = &#39;xiaozhi&#39;;
-            第二种方式：
-                语法：SET PASSWORD FOR &#39;用户名&#39;@&#39;主机名&#39; = PASSWORD(&#39;新密码&#39;);
-                例子：SET PASSWORD FOR &#39;xiaozhi&#39;@&#39;%&#39; = PASSWORD(&#39;abc&#39;);
-    
-             mysql数据库中忘记了root用户的密码？
-                    1. cmd -- &gt; net stop mysql 停止mysql服务
-                            需要管理员运行该cmd
-                    2. 使用无验证方式启动mysql服务： mysqld --skip-grant-tables
-                    3. 打开新的cmd窗口,直接输入mysql命令，敲回车。就可以登录成功
-                    4. use mysql;
-                    5.flush privilleges;
-                        说明：如果没有进行这个步骤进行下一步就会报错。
-                    6. update user set password = password(&#39;你的新密码&#39;) where user = &#39;root&#39;;
-                    7. 关闭两个窗口
-                    8. 打开任务管理器，手动结束mysqld.exe 的进程
-                    9. 启动mysql服务
-                    10. 使用新密码登录。
-    
-            ④查询用户
-            ①使用user数据库中
-            ②查询
-            语法：select * from user;
-    
-        2.授权
-        ①查询权限：
-                SHOW GRANTS FOR &#39;用户名&#39;@&#39;主机名&#39;;
-                
-        ②授予权限：
-                语法：grant 权限列表 on 数据库名.表名 to &#39;用户名&#39;@&#39;主机名&#39;;
-                例子：给xiaozhi用户授予所有权限，在任意数据库任意表上
-                        GRANT ALL ON *.* TO &#39;xiaozhi&#39;@&#39;%&#39;;
-                通配符ALL和*：ALL表示全部权限
-                                *表示全部
-    
-        ③撤销权限：
-                语法：revoke 权限列表 on 数据库名.表名 from &#39;用户名&#39;@&#39;主机名&#39;;
-                例子：REVOKE ALL ON *.* FROM &#39;xiaozhi&#39;@&#39;%&#39;;
-    
-            列子
-                1.创建用户itcast，只能够在当前主机localhost访问，密码123456
-                    create user &#39;itcast&#39;@&#39;localhost&#39;  identified by &#39;123456&#39;
-                2.创建heima，可以在任意主机访问该数据库，密码123456
-                    create &#39;heima&#39;@* identified by &#39;123456&#39;
-                3.修改用户heima的访问密码为1234
-                    update user set password=password(&#39;1234&#39;) where user=&#39;heima&#39;
-                4.删除itcast@localhost用户
-                    drop uesr &#39;itcast&#39;@&#39;localhost&#39;
-</code></pre>
-<p>DCL-控制权限</p>
-<pre><code>        查询权限
-            SHOW GREANTS FOR ‘用户名’@‘主机名’;
-    
-        授予权限
-            GRANT 权限列表 ON 数据库名.表名 TO ‘用户名’@‘主机名’;
-    
-        撤销权限
-            REVOKE 权限列表 ON 数据库名.表名 FROM ‘用户名’@‘主机名’;
-</code></pre>
-<p>函数</p>
-<p>1.字符串函数</p>
-<pre><code>常用字符串函数 
-    1.字符串拼接 
-        concat(s1,s2,s3,...)
-    2.去除字符串头部和尾部的空格
-        trim(str)
-    3.返回从字符串str从start位置起的len个长度的字符串
-        substring(str,start,len)
-    4.左右填充  用字符串pad对字符串str的左右进行填充，达到n个字符串长度
-        lpad(str,n,pad)
-        rpad(str,n,pad)
-
-由于业务需求变更，企业员工编号统一为五位数，目前不足五位数的向左补0，如1号员工的编号为00001
-    update person set worknumber=lpad(worknumber,5,&#39;0&#39;)
-        //person是表名，worknumber是字段名，l是left
-</code></pre>
-<p>2.数值函数</p>
-<pre><code>常用数值函数
-    1.cell(x) 向上取整
-    2.floor(x) 向下取整
-    3.mod(x 返回x/y的模
-</code></pre>
-<p>3.流程函数</p>
-<pre><code>统计学院的成绩，展示规则如下
-学员的属性有name id math chinese english  表的名字 是score
-    &gt;=85优秀  &gt;=60及格  &lt;60 不及格
-    select 
-        id,
-        name,
-        (case when math &gt;85 then &#39;优秀&#39; when math &gt;60 then &#39;及格&#39; when math  &lt;60 then &#39;不及格&#39; )math,
-        (case when english &gt;85 then &#39;优秀&#39; when english&gt;60 then &#39;及格&#39; when english &lt;60 then &#39;不及格&#39; )english,
-        (case when chinese &gt;85 then &#39;优秀&#39; when chinese &gt;60 then &#39;及格&#39; when chinese &lt;60 then &#39;不及格&#39; )chinese
-    from score;
-</code></pre>
-<p>约束</p>
-<pre><code>1.约束的分类
-    主键约束(primary key) PK
-    自增长约束(auto_increment)
-    非空约束(not null)
-    唯一性约束(unique)
-    默认约束(default)
-    零填充约束(zerofill)
-    外键约束(foreign key) FK
-    检查约束(check(条件)) 
-        实例
-            create  table  user(
-                    id int primary key auto_increment comment &#39;主键约束&#39;,
-                    name varchar(10) not null  unique  comment &#39;非空约束和唯一性约束&#39;,
-                    age int check ( age&gt;0&amp;&amp;age&lt;120 ) comment &#39;检查约束&#39;,
-                    status varchar(1) default &#39;1&#39; comment&#39;默认约束&#39;,
-                    gender char(1)
-             )comment &#39;用户表&#39;;
-
-
-2.外键约束
-    作用:外键可以让两张表的数据之间建立连接，从而保证数据的一致性和完整性
-    添加外键
-        1.创建表的同时添加外键
-                create table score(
-                score int(3),
-                st_id int(16),
-                cs_id int(16),
-                primary key(st_id,cs_id),
-                FOREIGN KEY (st_id) REFERENCES student(id),
-                FOREIGN KEY (cs_id) REFERENCES classes(id)
-                );
-                            
-        2. 已经创建表了怎么办：在表的定义外进行添加
-                alter table 表名 add constraint FK_ID foreign key(你的外键字段名) REFERENCES 外表表名(对应的表的主键字段名);
-        3.删除外键
-            alter table 表名 drop foreign key 外键名称
-
-        4.外键删除和更新行为				
-        NO ACTION	在父表中删除/更新记录时，首先检查记录中是否有外键，有则不允许删除/更新
-        RESTRICT	当在父表中删除/更新记录时，首先检查记录中是否有外键,有则不允许删除/更新
-        CASCADE	当在父表中删除/更新记录时，首先检查该记录是否有对应的外键，如果有，则也删除/更新外键在子表中的记录
-        set NULL	当在父表中删除对应记录时，首先检查该记录是否有对应外键，如果有则设置子表中外键值为null
-        set default	父表变更时，子表将外键列设置成一个默认的值(Innodb不支持)
-</code></pre>
-<p>多表查询</p>
-<pre><code>    连接查询
-        1.内连接  inner join：只返回两个表中连接字段相等的行。
-            演示:查询每一个员工的姓名以及相关部门的名称 表结构 emp,dept 连接条件 empt.dept_id=dept.id
-                select emp.name dept.name from emp,dept where  empt.dept_id=dept.id 这是隐式内连接
-                select e.name d.name from emp e,dept d where  e.dept_id=dept.id  给emp和dept起了别名e和p
-                select e.name d.name from emp e ineer join on e.dept_id=dept.id  给emp和dept起了别名e和p，但是这是显式内连接，且inner关键字可以删除
-
-
-        2.外连接
-                left join（左连接）：返回包括左表中的所有记录和右表中连接字段相等的记录。
-                right join（右连接）：返回包括右表中的所有记录和左表中连接字段相等的记录。
-                full join （全外连接）：返回左右表中所有的记录和左右表中连接字段相等的记录。
-</code></pre>
-]]></content>
-      <categories>
-        <category>RelationalDatabases</category>
-      </categories>
-      <tags>
-        <tag>-DataBase -Mysql</tag>
       </tags>
   </entry>
 </search>
