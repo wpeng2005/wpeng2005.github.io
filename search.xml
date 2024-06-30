@@ -7,7 +7,7 @@
 ]]></content>
   </entry>
   <entry>
-    <title>mysql</title>
+    <title>Mysql</title>
     <url>/2024/06/30/MysqlBase/</url>
     <content><![CDATA[<p>1.DDL</p>
 <p>DDL-数据库操作</p>
@@ -112,10 +112,8 @@
             DESC: 降序排列
             注意:如果有多个排序条件，当前边的条件值一-样时, 才会根据第二条件进行排序。
 </code></pre>
-<p>​				<br>​				原本的数据（是按照id升序排列的）<br>​				<br>                1.查询学生信息，按照年龄升序排列</p>
-<pre><code>            select * from stu order by age asc ;//asc可以不写，默认是升序排序
-            
-            2.查询学生信息，按照数学成绩降序排列 
+<p>​				<br>​				原本的数据（是按照id升序排列的）<br>​				<br>​				1.查询学生信息，按照年龄升序排列<br>​				<br>                select * from stu order by age asc ;&#x2F;&#x2F;asc可以不写，默认是升序排序</p>
+<pre><code>            2.查询学生信息，按照数学成绩降序排列 
             
             select * from stu order by math desc ;
             
@@ -143,10 +141,8 @@
             order by 排序列表
             limit 起始条目索引，显示的条目数
 </code></pre>
-<p>​				<br>​				执行顺序：<br>​				<br>                1&gt; from 子句<br>                2&gt; join 子句<br>                3&gt; on 子句<br>                4&gt; where 子句<br>                5&gt; group by 子句<br>                6&gt; having 子句<br>                7&gt; select 子句<br>                8&gt; order by 子句<br>                9&gt; limit 子句</p>
-<pre><code>            特点：
-            
-            起始条目索引如果不写，默认为0
+<p>​				<br>​				执行顺序：<br>​				<br>​				1&gt; from 子句<br>​				2&gt; join 子句<br>​				3&gt; on 子句<br>​				4&gt; where 子句<br>​				5&gt; group by 子句<br>​				6&gt; having 子句<br>​				7&gt; select 子句<br>​				8&gt; order by 子句<br>​				9&gt; limit 子句<br>​				<br>                特点：</p>
+<pre><code>            起始条目索引如果不写，默认为0
             #案例1：查询员工信息表的前5条
             SELECT * FROM employees LIMIT 0,5;
             #完全等价于
@@ -371,10 +367,10 @@
 </code></pre>
 ]]></content>
       <categories>
-        <category>mysql</category>
+        <category>RelationalDatabases</category>
       </categories>
       <tags>
-        <tag>database</tag>
+        <tag>-DataBase -Mysql</tag>
       </tags>
   </entry>
   <entry>
@@ -1480,7 +1476,7 @@
         <category>OperationSystem</category>
       </categories>
       <tags>
-        <tag>Linux OperationSystem</tag>
+        <tag>-Linux -OperationSystem</tag>
       </tags>
   </entry>
 </search>
