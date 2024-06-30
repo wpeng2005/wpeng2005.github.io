@@ -1,3 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2024/06/29/hello-world/</url>
+    <content><![CDATA[<p>hexo new page “categories”</p>
+]]></content>
+  </entry>
 </search>
