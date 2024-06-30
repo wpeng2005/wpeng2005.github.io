@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Welcome to my blog</title>
+    <url>/2024/06/29/IntroduceMyself/</url>
+    <content><![CDATA[<p>致力于java开发，分享后端相关知识</p>
+]]></content>
+  </entry>
+  <entry>
     <title>mysql</title>
     <url>/2024/06/30/MysqlBase/</url>
     <content><![CDATA[<p>1.DDL</p>
@@ -370,11 +376,5 @@
       <tags>
         <tag>database</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2024/06/29/hello-world/</url>
-    <content><![CDATA[<p>hexo new page “categories”</p>
-]]></content>
   </entry>
 </search>
