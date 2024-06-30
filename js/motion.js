@@ -173,5 +173,14 @@ NexT.motion.middleWares = {
       });
     }
     integrator.next();
-  }
+  },
+
+  sidebarToggle: function (integrator) {
+    sidebarToggleMotion.init();
+    integrator.next();
+    if (CONFIG.sidebar === 'always') {
+       sidebarToggleMotion.clickHandler();
+    }
+}
+
 };
