@@ -1426,11 +1426,11 @@
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">docker version</span><br><span class="line"></span><br><span class="line">docker run hello-world</span><br><span class="line"></span><br><span class="line">docker images</span><br></pre></td></tr></table></figure>
 ]]></content>
       <categories>
-        <category>OperationSystem</category>
+        <category>OperatingSystem</category>
       </categories>
       <tags>
         <tag>Linux</tag>
-        <tag>OperationSystem</tag>
+        <tag>OperatingSystem</tag>
       </tags>
   </entry>
   <entry>
