@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"wpeng2005.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"always","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Maven1.maven基本概念1.1 仓库仓库：用来存储资源，包含各种jar包 仓库分类：  本地仓库：自己电脑上存储资源的仓库，连接远程仓库获取资源 远程仓库：非本机电脑上的仓库，为本地仓库提供资源 中央仓库：Maven团队维护，存储所有资源的仓库 私服：部门&#x2F;公司范围内存储资源的仓库，从中央仓库获取资源    私服的作用：  保存具有版权的资源，包含购买1或者自主研发的jar包 中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Maven">
+<meta property="og:url" content="https://wpeng2005.github.io/2024/07/23/Maven/index.html">
+<meta property="og:site_name" content="PengBlog">
+<meta property="og:description" content="Maven1.maven基本概念1.1 仓库仓库：用来存储资源，包含各种jar包 仓库分类：  本地仓库：自己电脑上存储资源的仓库，连接远程仓库获取资源 远程仓库：非本机电脑上的仓库，为本地仓库提供资源 中央仓库：Maven团队维护，存储所有资源的仓库 私服：部门&#x2F;公司范围内存储资源的仓库，从中央仓库获取资源    私服的作用：  保存具有版权的资源，包含购买1或者自主研发的jar包 中">
+<meta property="og:locale">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/01/665b26f58932f.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/01/665b2a70e572b.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c248f04164.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c248ef0bb3.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c757a12937.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c757a1fb4e.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c7579db032.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c757a1d94b.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c766d45458.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c7cc6a5ec0.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c7cc601c41.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c8a5b2b567.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c8a5b481e9.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c8a5b82735.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c92d36af20.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c92d35dbd0.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/02/665c9618d2cef.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/03/665d3d34518ec.jpg">
+<meta property="og:image" content="https://www.freeimg.cn/i/2024/06/03/665d3d34174f7.jpg">
+<meta property="article:published_time" content="2024-07-23T04:31:27.977Z">
+<meta property="article:modified_time" content="2024-07-23T04:32:17.417Z">
+<meta property="article:author" content="Peng">
+<meta property="article:tag" content="Maven">
+<meta property="article:tag" content="PackageManageTool">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://www.freeimg.cn/i/2024/06/01/665b26f58932f.jpg">
+
+<link rel="canonical" href="https://wpeng2005.github.io/2024/07/23/Maven/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.css"><style>
+#needsharebutton-postbottom {
+  cursor: pointer;
+  height: 26px;
+  margin-top: 10px;
+  position: relative;
+}
+#needsharebutton-postbottom .btn {
+  border: 1px solid $btn-default-border-color;
+  border-radius: 3px;
+  display: initial;
+  padding: 1px 4px;
+}
+</style>
+  <title>Maven | PengBlog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">PengBlog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://wpeng2005.github.io/2024/07/23/Maven/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/myavatar.jpg">
+      <meta itemprop="name" content="Peng">
+      <meta itemprop="description" content="<font color="#FFFFFF">Done is better than perfect</font>">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="PengBlog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Maven
+        </h1>
+
+        <div class="post-meta">
+        
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-23 12:31:27 / 修改时间：12:32:17" itemprop="dateCreated datePublished" datetime="2024-07-23T12:31:27+08:00">2024-07-23</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/PackageManageTool/" itemprop="url" rel="index"><span itemprop="name">PackageManageTool</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="Maven"><a href="#Maven" class="headerlink" title="Maven"></a>Maven</h1><h2 id="1-maven基本概念"><a href="#1-maven基本概念" class="headerlink" title="1.maven基本概念"></a>1.maven基本概念</h2><h3 id="1-1-仓库"><a href="#1-1-仓库" class="headerlink" title="1.1 仓库"></a>1.1 仓库</h3><p>仓库：用来存储资源，包含各种jar包</p>
+<p>仓库分类：</p>
+<ul>
+<li>本地仓库：自己电脑上存储资源的仓库，连接远程仓库获取资源</li>
+<li>远程仓库：非本机电脑上的仓库，为本地仓库提供资源<ul>
+<li>中央仓库：Maven团队维护，存储所有资源的仓库</li>
+<li>私服：部门&#x2F;公司范围内存储资源的仓库，从中央仓库获取资源</li>
+</ul>
+</li>
+</ul>
+<p>私服的作用：</p>
+<ul>
+<li>保存具有版权的资源，包含购买1或者自主研发的jar包<ul>
+<li>中央仓库的jar都是开源的，不能存储具有版权的资源</li>
+</ul>
+</li>
+<li>一定范围内共享资源，仅对内部开放，不对外部共享</li>
+</ul>
+<span id="more"></span>
+
+<h3 id="1-2-坐标"><a href="#1-2-坐标" class="headerlink" title="1.2 坐标"></a>1.2 坐标</h3><p>什么是坐标?</p>
+<p><strong>Maven中的坐标就是用于描述仓库中资源的位置</strong></p>
+<p>&#x3D;&#x3D;Maven坐标的主要组成&#x3D;&#x3D;</p>
+<ul>
+<li>groupId：定义当前maven项目隶属于组织名称（通常是域名反写，例如：org.mybatis）</li>
+<li>artifactId：定义当前maven项目名称（通常是模块名称(在项目中定义了一个wpeng.service，那么工件id就是wpeng.service)，例如CRM,SMS,）</li>
+<li>version：定义当前项目版本号<ul>
+<li>&#x3D;&#x3D;packaging：定义该项目的打包方式，但是不属于maven的坐标&#x3D;&#x3D;</li>
+</ul>
+</li>
+</ul>
+<p>Maven坐标的作用：</p>
+<p>​	使用唯一标识，唯一性定位资源位置，通过该标识可以将资源的识别与下载工作交由机器完成</p>
+<h3 id="1-3-仓库配置"><a href="#1-3-仓库配置" class="headerlink" title="1.3 仓库配置"></a>1.3 仓库配置</h3><p>maven默认的本地仓库是在c盘用户目录下面，但是过多资源会使c盘容量骤减，所以我们自己配置</p>
+<p>本地仓库配置：找到apche-maven的conf目录，点进去修改setting.xml，它本地资源位置被使通过注释来配置的，所有我们要提取</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">&lt;!-- localRepository</span></span><br><span class="line"><span class="comment">   | The path to the local repository maven will use to store artifacts.</span></span><br><span class="line"><span class="comment">   |</span></span><br><span class="line"><span class="comment">   | Default: $&#123;user.home&#125;/.m2/repository</span></span><br><span class="line"><span class="comment">  &lt;localRepository&gt;/path/to/local/repo&lt;/localRepository&gt;</span></span><br><span class="line"><span class="comment">  --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">localRepository</span>&gt;</span>D:\Maven\apache-maven-3.6.1-bin\apache-maven-3.6.1\mvn_repo<span class="tag">&lt;/<span class="name">localRepository</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>自己提取locaRepository标签放在外面，标签里面的填上你想存放maven本地仓库位置的目录位置</p>
+<p>镜像仓库配置：setting.xml配置文件中找到mirror</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mirrors</span>&gt;</span></span><br><span class="line">   <span class="comment">&lt;!-- mirror</span></span><br><span class="line"><span class="comment">    | Specifies a repository mirror site to use instead of a given repository. The repository that</span></span><br><span class="line"><span class="comment">    | this mirror serves has an ID that matches the mirrorOf element of this mirror. IDs are used</span></span><br><span class="line"><span class="comment">    | for inheritance and direct lookup purposes, and must be unique across the set of mirrors.</span></span><br><span class="line"><span class="comment">    |</span></span><br><span class="line"><span class="comment">   &lt;mirror&gt;</span></span><br><span class="line"><span class="comment">     &lt;id&gt;mirrorId&lt;/id&gt;</span></span><br><span class="line"><span class="comment">     &lt;mirrorOf&gt;repositoryId&lt;/mirrorOf&gt;</span></span><br><span class="line"><span class="comment">     &lt;name&gt;Human Readable Name for this Mirror.&lt;/name&gt;</span></span><br><span class="line"><span class="comment">     &lt;url&gt;http://my.repository.com/repo/path&lt;/url&gt;</span></span><br><span class="line"><span class="comment">   &lt;/mirror&gt;</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mirror</span>&gt;</span>  </span><br><span class="line">  <span class="tag">&lt;<span class="name">id</span>&gt;</span>alimaven<span class="tag">&lt;/<span class="name">id</span>&gt;</span>  </span><br><span class="line">  <span class="tag">&lt;<span class="name">name</span>&gt;</span>aliyun maven<span class="tag">&lt;/<span class="name">name</span>&gt;</span>  </span><br><span class="line">  <span class="tag">&lt;<span class="name">url</span>&gt;</span>http://maven.aliyun.com/nexus/content/groups/public/<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">mirrorOf</span>&gt;</span>central<span class="tag">&lt;/<span class="name">mirrorOf</span>&gt;</span>          </span><br><span class="line">   <span class="tag">&lt;/<span class="name">mirror</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">mirrors</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>配置了阿里云仓库</p>
+<p><strong>全局setting与用户setting区别</strong></p>
+<ul>
+<li>全局setting定义了当前计算机中Maven的公共配置</li>
+<li>用户setting定义了当前用户的配置</li>
+</ul>
+<h2 id="2-依赖管理"><a href="#2-依赖管理" class="headerlink" title="2.依赖管理"></a>2.依赖管理</h2><h3 id="2-1-依赖配置"><a href="#2-1-依赖配置" class="headerlink" title="2.1 依赖配置"></a>2.1 依赖配置</h3><p><strong>依赖是指当前项目运行所需要的jar，一个项目可以设置多个依赖</strong></p>
+<h3 id="2-2-依赖传递"><a href="#2-2-依赖传递" class="headerlink" title="2.2 依赖传递"></a>2.2 依赖传递</h3><p><strong>依赖具有传递性</strong></p>
+<ul>
+<li>直接依赖：在当前项目中通过依赖配置建立的依赖关系</li>
+<li>间接依赖：被资源的资源如果依赖其他资源，当前项目间接依赖其他资源</li>
+</ul>
+<p><img src="https://www.freeimg.cn/i/2024/06/01/665b26f58932f.jpg" alt="https://www.freeimg.cn/i/2024/06/01/665b26f58932f.jpg"></p>
+<p>&#x3D;&#x3D;比如说我在project02的pom文件中加入了一个依赖，这个依赖的坐标是我project03的pom文件的坐标&#x3D;&#x3D;</p>
+<p><strong>依赖传递当中的冲突问题</strong></p>
+<ul>
+<li>路径优先：当依赖中出现相同的资源时，层级越深，优先级越低，层级越浅，优先级越高</li>
+<li>声明优先：当资源在相同层级被依赖时，配置顺序靠前的覆盖配置顺序靠后的</li>
+<li>特殊优先：当同级配置了相同资源的不同版本，后配置的覆盖先配置的</li>
+</ul>
+<h3 id="2-3-可选依赖"><a href="#2-3-可选依赖" class="headerlink" title="2.3 可选依赖"></a>2.3 可选依赖</h3><p>可选依赖指对外隐藏当前所依赖的资源—-不透明</p>
+<p>在maven坐标里面加一个option标签</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.21<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-排除依赖"><a href="#2-4-排除依赖" class="headerlink" title="2.4 排除依赖"></a>2.4 排除依赖</h3><p>排除依赖：主动断开依赖的资源，被排除的资源无需指定版本</p>
+<p><img src="https://www.freeimg.cn/i/2024/06/01/665b2a70e572b.jpg" alt="https://www.freeimg.cn/i/2024/06/01/665b2a70e572b.jpg"></p>
+<h3 id="2-5-依赖范围"><a href="#2-5-依赖范围" class="headerlink" title="2.5 依赖范围"></a>2.5 依赖范围</h3><p><strong>依赖的jar默认情况是可以在任何地方使用，可以通过scope标签设定其作用范围</strong></p>
+<p>作用范围：</p>
+<ul>
+<li>主程序范围有效（main文件夹范围内）</li>
+<li>测试程序有效（test文件夹范围内）</li>
+<li>是否参与打包（package指令范围内）</li>
+</ul>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c248f04164.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c248f04164.jpg"></p>
+<p><strong>依赖范围传递性</strong></p>
+<p>带有依赖范围的资源在进行传递时，作用范围将受到影响</p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c248ef0bb3.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c248ef0bb3.jpg"></p>
+<h2 id="3-生命周期与插件"><a href="#3-生命周期与插件" class="headerlink" title="3.生命周期与插件"></a>3.生命周期与插件</h2><h3 id="3-1-构建生命周期"><a href="#3-1-构建生命周期" class="headerlink" title="3.1 构建生命周期"></a>3.1 构建生命周期</h3><p>Maven构建生命周期描述的是一次构建过程经历经历了多个个事件</p>
+<p><strong>Maven对项目构建的生命周期划分为3套</strong></p>
+<ul>
+<li>clean：清理工作</li>
+<li>default：核心工作，例如编译，测试，打包，部署等</li>
+<li>site：产生广告，发布站点等</li>
+</ul>
+<p><strong>clean生命周期：</strong></p>
+<ul>
+<li>pre-clean   执行一些需要在clean之前完成的工作</li>
+<li>clean        移除所有上一次构建完成的文件</li>
+<li>post-clean  执行一些需要在clean之后立刻完成的工作</li>
+</ul>
+<p><strong>default生命周期</strong></p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c757a12937.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c757a12937.jpg"></p>
+<p><strong>site：</strong></p>
+<ul>
+<li>pre-site：执行一些需要在生成站点文档之前完成的工作</li>
+<li>site：生成项目的站点文档</li>
+<li>post-site：执行一些需要在生成站点文档之后完成的工作，并且为部署做准备</li>
+<li>site-deploy：将生成的站点文档部署到特定服务器上</li>
+</ul>
+<h3 id="3-2-插件"><a href="#3-2-插件" class="headerlink" title="3.2 插件"></a>3.2 插件</h3><ul>
+<li>插件与生命周期内的阶段绑定，在执行到对应生命周期时执行的插件功能</li>
+<li>默认Maven在各个生命周期上绑定有预设功能</li>
+<li>通过插件可以自定义其他功能</li>
+</ul>
+<h2 id="4-Maven高级"><a href="#4-Maven高级" class="headerlink" title="4.Maven高级"></a>4.Maven高级</h2><h3 id="4-1-分模块开发与设计"><a href="#4-1-分模块开发与设计" class="headerlink" title="4.1 分模块开发与设计"></a>4.1 分模块开发与设计</h3><h5 id="ssm-pojo"><a href="#ssm-pojo" class="headerlink" title="ssm_pojo"></a>ssm_pojo</h5><p>1.新建模块</p>
+<p>2.只留下实体类，可以删除test目录和main下的resource目录</p>
+<h5 id="ssm-dao"><a href="#ssm-dao" class="headerlink" title="ssm_dao"></a>ssm_dao</h5><p>1.新建模块</p>
+<p>2.main目录和test目录都不要删，要删除某些不需要的配置文件</p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c757a1fb4e.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c757a1fb4e.jpg"></p>
+<h5 id="ssm-service"><a href="#ssm-service" class="headerlink" title="ssm-service"></a>ssm-service</h5><p><img src="https://www.freeimg.cn/i/2024/06/02/665c7579db032.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c7579db032.jpg"></p>
+<h5 id="ssm-controller"><a href="#ssm-controller" class="headerlink" title="ssm_controller"></a>ssm_controller</h5><p><img src="https://www.freeimg.cn/i/2024/06/02/665c757a1d94b.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c757a1d94b.jpg"></p>
+<h3 id="4-2-聚合"><a href="#4-2-聚合" class="headerlink" title="4.2 聚合"></a>4.2 聚合</h3><p><strong>多模块构建维护</strong></p>
+<p>问题：<img src="https://www.freeimg.cn/i/2024/06/02/665c766d45458.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c766d45458.jpg"></p>
+<p>比如dao层改变，需要重新install，但是其他几个模块不变，会导致数据不同步</p>
+<p>&#x3D;&#x3D;建立一个模块，管理其他模块，当这个模块做任何行为时，其他模块也做一样的行为&#x3D;&#x3D;</p>
+<p><strong>这个模块只需要留一个pom文件，在pom文件的坐标下，加上<packing>pom<packing>标签，定义该工程用户进行构建管理</strong></p>
+<p>使用modules标签</p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c7cc6a5ec0.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c7cc6a5ec0.jpg"></p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c7cc601c41.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c7cc601c41.jpg"></p>
+<h3 id="4-3-继承"><a href="#4-3-继承" class="headerlink" title="4.3 继承"></a>4.3 继承</h3><p><img src="https://www.freeimg.cn/i/2024/06/02/665c8a5b2b567.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c8a5b2b567.jpg"></p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c8a5b481e9.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c8a5b481e9.jpg"></p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c8a5b82735.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c8a5b82735.jpg"></p>
+<h3 id="4-4-属性定义与使用"><a href="#4-4-属性定义与使用" class="headerlink" title="4.4 属性定义与使用"></a>4.4 属性定义与使用</h3><p>在pom文件中定义属性,&#x3D;&#x3D;本质上就是定义变量，使用变量进行赋值，防止硬代码的出现&#x3D;&#x3D;</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">maven.compiler.source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.source</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">maven.compiler.target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">maven.compiler.target</span>&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;<span class="name">spring.version</span>&gt;</span>5.1.9.RELEASE<span class="tag">&lt;/<span class="name">spring.version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dubbo.version</span>&gt;</span>2.7.4.1<span class="tag">&lt;/<span class="name">dubbo.version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">zookeeper.version</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">zookeeper.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  <span class="comment">&lt;!--Dubbo的起步依赖，版本2.7之后统一为rg.apache.dubb --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;dubbo.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--ZooKeeper客户端实现 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;zookeeper.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="comment">&lt;!--ZooKeeper客户端实现 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;zookeeper.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-5-版本管理"><a href="#4-5-版本管理" class="headerlink" title="4.5 版本管理"></a>4.5 版本管理</h3><p><img src="https://www.freeimg.cn/i/2024/06/02/665c92d36af20.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c92d36af20.jpg"></p>
+<p><img src="https://www.freeimg.cn/i/2024/06/02/665c92d35dbd0.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c92d35dbd0.jpg"></p>
+<h3 id="4-6-资源配置"><a href="#4-6-资源配置" class="headerlink" title="4.6 资源配置"></a>4.6 资源配置</h3><p><img src="https://www.freeimg.cn/i/2024/06/02/665c9618d2cef.jpg" alt="https://www.freeimg.cn/i/2024/06/02/665c9618d2cef.jpg"></p>
+<h3 id="4-7-多环境兼容"><a href="#4-7-多环境兼容" class="headerlink" title="4.7 多环境兼容"></a>4.7 多环境兼容</h3><p><img src="https://www.freeimg.cn/i/2024/06/03/665d3d34518ec.jpg" alt="https://www.freeimg.cn/i/2024/06/03/665d3d34518ec.jpg"></p>
+<h3 id="4-8-跳过测试"><a href="#4-8-跳过测试" class="headerlink" title="4.8 跳过测试"></a>4.8 跳过测试</h3><p>跳过测试的应用场景：</p>
+<ul>
+<li>整体功能模块未开发</li>
+<li>模块中某个功能未开发完毕</li>
+<li>单个功能更新调试导致其他功能失败</li>
+<li>快速打包</li>
+<li>…….</li>
+</ul>
+<p><img src="https://www.freeimg.cn/i/2024/06/03/665d3d34174f7.jpg" alt="https://www.freeimg.cn/i/2024/06/03/665d3d34174f7.jpg"></p>
+<h2 id="5-私服"><a href="#5-私服" class="headerlink" title="5.私服"></a>5.私服</h2><p><strong>idea环境中资源上传与下载</strong></p>
+
+    </div>
+
+    
+    
+    <div class="post-widgets">
+      <div id="needsharebutton-postbottom">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    </div>
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Maven/" rel="tag"># Maven</a>
+              <a href="/tags/PackageManageTool/" rel="tag"># PackageManageTool</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/07/01/SpringBoot/" rel="prev" title="Springboot">
+      <i class="fa fa-chevron-left"></i> Springboot
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Maven"><span class="nav-number">1.</span> <span class="nav-text">Maven</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-maven%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">1.maven基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E4%BB%93%E5%BA%93"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E5%9D%90%E6%A0%87"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 坐标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-%E4%BB%93%E5%BA%93%E9%85%8D%E7%BD%AE"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 仓库配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E4%BE%9D%E8%B5%96%E7%AE%A1%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">2.依赖管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E4%BE%9D%E8%B5%96%E9%85%8D%E7%BD%AE"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 依赖配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%BE%9D%E8%B5%96%E4%BC%A0%E9%80%92"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 依赖传递</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E5%8F%AF%E9%80%89%E4%BE%9D%E8%B5%96"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 可选依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-%E6%8E%92%E9%99%A4%E4%BE%9D%E8%B5%96"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.4 排除依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-%E4%BE%9D%E8%B5%96%E8%8C%83%E5%9B%B4"><span class="nav-number">1.2.5.</span> <span class="nav-text">2.5 依赖范围</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E4%B8%8E%E6%8F%92%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">3.生命周期与插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-%E6%9E%84%E5%BB%BA%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 构建生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-%E6%8F%92%E4%BB%B6"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 插件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Maven%E9%AB%98%E7%BA%A7"><span class="nav-number">1.4.</span> <span class="nav-text">4.Maven高级</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%88%86%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91%E4%B8%8E%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 分模块开发与设计</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#ssm-pojo"><span class="nav-number">1.4.1.0.1.</span> <span class="nav-text">ssm_pojo</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ssm-dao"><span class="nav-number">1.4.1.0.2.</span> <span class="nav-text">ssm_dao</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ssm-service"><span class="nav-number">1.4.1.0.3.</span> <span class="nav-text">ssm-service</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ssm-controller"><span class="nav-number">1.4.1.0.4.</span> <span class="nav-text">ssm_controller</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-%E8%81%9A%E5%90%88"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E7%BB%A7%E6%89%BF"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E5%B1%9E%E6%80%A7%E5%AE%9A%E4%B9%89%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="nav-number">1.4.4.</span> <span class="nav-text">4.4 属性定义与使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-5-%E7%89%88%E6%9C%AC%E7%AE%A1%E7%90%86"><span class="nav-number">1.4.5.</span> <span class="nav-text">4.5 版本管理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-6-%E8%B5%84%E6%BA%90%E9%85%8D%E7%BD%AE"><span class="nav-number">1.4.6.</span> <span class="nav-text">4.6 资源配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-7-%E5%A4%9A%E7%8E%AF%E5%A2%83%E5%85%BC%E5%AE%B9"><span class="nav-number">1.4.7.</span> <span class="nav-text">4.7 多环境兼容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-8-%E8%B7%B3%E8%BF%87%E6%B5%8B%E8%AF%95"><span class="nav-number">1.4.8.</span> <span class="nav-text">4.8 跳过测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E7%A7%81%E6%9C%8D"><span class="nav-number">1.5.</span> <span class="nav-text">5.私服</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Peng"
+      src="/images/myavatar.jpg">
+  <p class="site-author-name" itemprop="name">Peng</p>
+  <div class="site-description" itemprop="description"><font color="#FFFFFF">Done is better than perfect</font></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/wpeng2005" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;wpeng2005" rel="noopener" target="_blank"><i class="github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/2303_76216371" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;2303_76216371" rel="noopener" target="_blank"><i class="crosshairs fa-fw"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:w2119026961@gmail.com" title="E-Mail → mailto:w2119026961@gmail.com" rel="noopener" target="_blank"><i class="envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+      
+    </div>
+  
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fab fa-github"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">peng</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-needmoreshare2@1/needsharebutton.min.js"></script>
+  <script>
+      pbOptions = {};
+        pbOptions.iconStyle = "box";
+        pbOptions.boxForm = "horizontal";
+        pbOptions.position = "bottomCenter";
+        pbOptions.networks = "Wechat,QQZone,Weibo,Douban,Twitter,Facebook";
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+  </script>
+
+  
+</body>
+</html>
